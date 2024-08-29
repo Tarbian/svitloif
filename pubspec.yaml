@@ -1,7 +1,7 @@
 name: svitloif
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.3
+version: 0.1.4
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
@@ -28,11 +28,11 @@ flutter:
 
 flutter_launcher_icons:
   android: "launcher_icon"
-  ios: true
+  ios: false
   image_path: "assets/icon.png"
   min_sdk_android: 21
   web:
-    generate: true
+    generate: false
     image_path: "assets/icon.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
