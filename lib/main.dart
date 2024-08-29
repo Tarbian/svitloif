@@ -11,22 +11,62 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
+    _saveThemePreference();
+  }
+
+  Future<void> _loadThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _themeMode = prefs.getBool('isDarkMode') ?? false ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
+
+  Future<void> _saveThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', _themeMode == ThemeMode.dark);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadThemePreference();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
+        brightness: Brightness.light,
       ),
-      home: const HomePage(),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+      ),
+      themeMode: _themeMode,
+      home: HomePage(toggleTheme: _toggleTheme),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final VoidCallback toggleTheme;
+
+  const HomePage({super.key, required this.toggleTheme});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -70,10 +110,8 @@ class _HomePageState extends State<HomePage> {
         isLoading = false;
       });
 
-      // Load the last selected queue
       await loadLastSelectedQueue();
     } catch (error) {
-      // Завантаження даних з кешу у разі помилки
       final cachedRanges = await loadCachedData(today);
       final cachedNextDayRanges = await loadCachedData(tomorrow);
 
@@ -83,10 +121,8 @@ class _HomePageState extends State<HomePage> {
         isLoading = false;
       });
 
-      // Load the last selected queue
       await loadLastSelectedQueue();
 
-      // Показуємо спливаюче повідомлення про відсутність зв'язку
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Немає зв\'язку. Дані можуть бути застарілі.'),
@@ -127,7 +163,6 @@ class _HomePageState extends State<HomePage> {
         final List<Range> loadedRanges = List<Range>.from(
             data['ranges'].map((item) => Range.fromJson(item)));
         setRanges(loadedRanges);
-        // Зберігаємо дані в кеш
         await cacheData(date, loadedRanges);
       } else {
         setRanges([]);
@@ -165,6 +200,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Графік відключення світла'),
+        actions: [
+          IconButton(
+            icon: Icon(Theme.of(context).brightness == Brightness.light
+                ? Icons.dark_mode
+                : Icons.light_mode),
+            onPressed: widget.toggleTheme,
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: loadData,
