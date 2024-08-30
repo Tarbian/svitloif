@@ -57,6 +57,7 @@ class CircularTimeChart extends StatelessWidget {
               title: title,
               number: range.name,
               segments: _getTimeSegments(),
+              themeData: Theme.of(context),
             ),
           ),
         );
@@ -69,11 +70,13 @@ class CircularTimeChartPainter extends CustomPainter {
   final String title;
   final String number;
   final List<TimeSegment> segments;
+  final ThemeData themeData;
 
   CircularTimeChartPainter({
     required this.title,
     required this.number,
     required this.segments,
+    required this.themeData,
   });
 
   @override
@@ -118,14 +121,14 @@ class CircularTimeChartPainter extends CustomPainter {
     }
 
     final innerCirclePaint = Paint()
-      ..color = Colors.white
+      ..color = themeData.scaffoldBackgroundColor
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, innerRadius, innerCirclePaint);
 
     final titlePainter = TextPainter(
       text: TextSpan(
         text: title,
-        style: const TextStyle(color: Colors.black, fontSize: 14),
+        style: TextStyle(color: themeData.textTheme.bodyMedium?.color ?? Colors.black, fontSize: 14),
       ),
       textDirection: TextDirection.ltr,
     );
@@ -135,8 +138,10 @@ class CircularTimeChartPainter extends CustomPainter {
     final numberPainter = TextPainter(
       text: TextSpan(
         text: number,
-        style: const TextStyle(
-            color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+        style: TextStyle(
+            color: themeData.textTheme.titleLarge?.color ?? Colors.black, 
+            fontSize: 24, 
+            fontWeight: FontWeight.bold),
       ),
       textDirection: TextDirection.ltr,
     );
