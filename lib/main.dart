@@ -23,7 +23,8 @@ class _MyAppState extends State<MyApp> {
 
   void _toggleTheme() {
     setState(() {
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      _themeMode =
+          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     });
     _saveThemePreference();
   }
@@ -31,7 +32,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> _loadThemePreference() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _themeMode = prefs.getBool('isDarkMode') ?? false ? ThemeMode.dark : ThemeMode.light;
+      _themeMode = prefs.getBool('isDarkMode') ?? false
+          ? ThemeMode.dark
+          : ThemeMode.light;
     });
   }
 
@@ -79,11 +82,62 @@ class _HomePageState extends State<HomePage> {
   Range? nextDaySelectedRange;
   int? valueIndex;
   bool isLoading = true;
+  bool hasShownHelp = false;
 
   @override
   void initState() {
     super.initState();
-    initializeDateFormatting('uk', null).then((_) => loadData());
+    initializeDateFormatting('uk', null).then((_) {
+      loadData();
+      checkAndShowHelp();
+    });
+  }
+
+  Future<void> checkAndShowHelp() async {
+    final prefs = await SharedPreferences.getInstance();
+    hasShownHelp = prefs.getBool('hasShownHelp') ?? false;
+    if (!hasShownHelp) {
+      // Використовуємо Future.delayed, щоб дочекатися побудови віджета
+      Future.delayed(Duration.zero, () {
+        showHelpDialog();
+      });
+    }
+  }
+
+  Future<void> showHelpDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Умовні позначення:'),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('🟢 Зелений - відключень немає'),
+              Text('🟡 Жовтий - можливе відключення'),
+              Text('🔴 Червоний - буде відключення'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!hasShownHelp) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('hasShownHelp', true);
+      setState(() {
+        hasShownHelp = true;
+      });
+    }
   }
 
   Future<void> loadData() async {
@@ -213,31 +267,55 @@ class _HomePageState extends State<HomePage> {
         onRefresh: loadData,
         child: ListView(
           children: [
-            Center(
-              child: DropdownButton<Range>(
-                hint: const Text('Оберіть чергу'),
-                value: ranges.contains(selectedRange) ? selectedRange : null,
-                onChanged: (Range? newValue) {
-                  setState(() {
-                    selectedRange = newValue;
-                    valueIndex =
-                        newValue != null ? ranges.indexOf(newValue) : null;
-                    nextDaySelectedRange =
-                        valueIndex != null && nextDayRanges.isNotEmpty
-                            ? nextDayRanges[valueIndex!]
-                            : null;
-                  });
-                  if (newValue != null) {
-                    saveLastSelectedQueue(newValue.name);
-                  }
-                },
-                items: ranges.map<DropdownMenuItem<Range>>((Range range) {
-                  return DropdownMenuItem<Range>(
-                    value: range,
-                    child: Text(range.name),
-                  );
-                }).toList(),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.help_outline),
+                      onPressed: showHelpDialog,
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: DropdownButton<Range>(
+                    hint: const Text('Оберіть чергу'),
+                    value:
+                        ranges.contains(selectedRange) ? selectedRange : null,
+                    onChanged: (Range? newValue) {
+                      setState(() {
+                        selectedRange = newValue;
+                        valueIndex =
+                            newValue != null ? ranges.indexOf(newValue) : null;
+                        nextDaySelectedRange =
+                            valueIndex != null && nextDayRanges.isNotEmpty
+                                ? nextDayRanges[valueIndex!]
+                                : null;
+                      });
+                      if (newValue != null) {
+                        saveLastSelectedQueue(newValue.name);
+                      }
+                    },
+                    items: ranges.map<DropdownMenuItem<Range>>((Range range) {
+                      return DropdownMenuItem<Range>(
+                        value: range,
+                        child: Text(range.name),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                Flexible(
+                  // <-- flexible space
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    // color: Colors.green,
+                    // child: Text('right'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             if (isLoading)

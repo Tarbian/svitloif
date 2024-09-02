@@ -9,22 +9,37 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Дата: ${customFormatDate(range.date)}'),
-          const SizedBox(height: 10),
-          Text('Години відключення: ${formatIntervals(range.off)}'),
-          const SizedBox(height: 10),
-          Text('Можливі вимкнення: ${formatIntervals(range.maybe)}'),
-          const SizedBox(height: 10),
-          Text('Години увімкнення: ${formatIntervals(range.on)}'),
-          const SizedBox(height: 20),
-          buildHourContainers(range, 0, 12),
-          buildHourContainers(range, 12, 24),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Деталі'),
+      ),
+      body: Material(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Дата: ${customFormatDate(range.date)}',
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Години відключення: ${formatIntervals(range.off)}',
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Можливі вимкнення: ${formatIntervals(range.maybe)}',
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Години увімкнення: ${formatIntervals(range.on)}',
+              ),
+              const SizedBox(height: 20),
+              buildHourContainers(range, 0, 12),
+              buildHourContainers(range, 12, 24),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -82,3 +97,23 @@ class DetailPage extends StatelessWidget {
     return false;
   }
 }
+
+// class MyStyle extends TextStyle {
+//   const MyStyle({
+//     Color color = const Color.fromARGB(255, 0, 0, 0),
+//     double fontSize = 16.0,
+//     FontWeight fontWeight = FontWeight.normal,
+//     FontStyle fontStyle = FontStyle.normal,
+//     double letterSpacing = 0.0,
+//     double wordSpacing = 0.0,
+//     TextDecoration decoration = TextDecoration.none,
+//   }) : super(
+//           color: color,
+//           fontSize: fontSize,
+//           fontWeight: fontWeight,
+//           fontStyle: fontStyle,
+//           letterSpacing: letterSpacing,
+//           wordSpacing: wordSpacing,
+//           decoration: decoration,
+//         );
+// }
