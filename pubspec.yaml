@@ -28,7 +28,6 @@ flutter:
   # assets:
   #   - assets/data.json
 
-
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: false
