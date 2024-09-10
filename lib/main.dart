@@ -1,15 +1,30 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'range_model.dart';
 import 'circular_time_chart.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:svitloif/notification_service.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation(await getCurrentTimezone()));
+  NotificationService.checkNotificationPermissions();
   runApp(const MyApp());
 }
+
+ Future<String> getCurrentTimezone() async {
+    final String currentTimeZone = await 
+    FlutterTimezone.getLocalTimezone();
+    print(currentTimeZone);
+    return currentTimeZone;
+  }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
