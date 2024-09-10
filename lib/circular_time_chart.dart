@@ -7,10 +7,10 @@ class CircularTimeChart extends StatelessWidget {
   final Range range;
 
   const CircularTimeChart({
-    Key? key,
+    super.key,
     this.title = "ПІДЧЕРГА",
     required this.range,
-  }) : super(key: key);
+  });
 
   List<TimeSegment> _getTimeSegments() {
     List<TimeSegment> segments = [];
@@ -128,7 +128,9 @@ class CircularTimeChartPainter extends CustomPainter {
     final titlePainter = TextPainter(
       text: TextSpan(
         text: title,
-        style: TextStyle(color: themeData.textTheme.bodyMedium?.color ?? Colors.black, fontSize: 14),
+        style: TextStyle(
+            color: themeData.textTheme.bodyMedium?.color ?? Colors.black,
+            fontSize: 14),
       ),
       textDirection: TextDirection.ltr,
     );
@@ -139,8 +141,8 @@ class CircularTimeChartPainter extends CustomPainter {
       text: TextSpan(
         text: number,
         style: TextStyle(
-            color: themeData.textTheme.titleLarge?.color ?? Colors.black, 
-            fontSize: 24, 
+            color: themeData.textTheme.titleLarge?.color ?? Colors.black,
+            fontSize: 24,
             fontWeight: FontWeight.bold),
       ),
       textDirection: TextDirection.ltr,

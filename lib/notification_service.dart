@@ -36,13 +36,11 @@ class NotificationService {
   }
 
   Future<void> initScheduleNotification() async {
-    // notificationsPlugin.requestExactAlarmsPermission();
     await initNotification();
 
     final scheduledDate =
         tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10));
 
-    // Виведення запланованої дати в консоль
     print('Notification scheduled for: $scheduledDate');
 
     try {
