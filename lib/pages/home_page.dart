@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:svitloif/range_model.dart';
-import 'package:svitloif/settings_page.dart';
-import 'circular_time_chart.dart';
+import 'package:svitloif/widgets/circular_time_chart.dart';
+import 'package:svitloif/models/range_model.dart';
+import 'package:svitloif/pages/settings_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';

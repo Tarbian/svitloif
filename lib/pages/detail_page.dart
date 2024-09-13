@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'range_model.dart';
+import 'package:svitloif/models/range_model.dart';
+
 
 class DetailPage extends StatelessWidget {
   final Range range;

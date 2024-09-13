@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:svitloif/home_page.dart';
-import 'package:svitloif/notification_service.dart';
+import 'package:svitloif/pages/home_page.dart';
+import 'package:svitloif/services/notification_service.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 

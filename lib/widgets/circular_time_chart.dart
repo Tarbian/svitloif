@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:svitloif/models/range_model.dart';
 import 'dart:math';
-import 'range_model.dart';
+
 
 class CircularTimeChart extends StatelessWidget {
   final String title;
